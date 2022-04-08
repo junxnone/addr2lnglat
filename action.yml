@@ -1,0 +1,90 @@
+name: issue2lnglat
+description: "Turn issues into markdown file"
+branding:
+  icon: "archive"
+  color: "green"
+inputs:
+  branch:
+    description: "Target branch name to push the markdownfile"
+    required: true
+    default: "master"
+  dir:
+    description: "the posts dir"
+    required: true
+    default: "_posts"
+  GITHUB_TOKEN:
+    description: "secrets.GITHUB_TOKEN"
+    required: true
+  created_at:
+    description: "github.event.issue.created_at"
+    required: true
+  updated_at:
+    description: "github.event.issue.updated_at"
+    required: true
+  label_name:
+    description: "github.event.issue.label[name]"
+    required: true
+  title:
+    description: "github.event.issue.title"
+    required: true
+  body:
+    description: "github.event.issue.body"
+    required: true
+  number:
+    description: "github.event.issue.bumber"
+    required: true
+  actor:
+    description: "github.actor"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - id: generate-markdown-file
+      name: Turn comment into file
+      shell: bash
+      run: |
+        DATE="${{ inputs.created_at }}"
+        mkdir -p ${{ inputs.dir }}
+        # useing '' to wrap the title to escapse backticks
+        # and quates to wrap title in post body is to escapse backticks in jekyll building
+        POST_TITLE=$(sed -E 's/[[:space:]|[:punct:]]/_/g' <<<'${{ inputs.title }}')
+        if [ "${{ inputs.title }}" == "_sidebar" ];then
+        cat <<'EOF' > docs/"${POST_TITLE}".md
+        ${{ inputs.body }}
+        EOF
+        elif [ "${{ inputs.title }}" == "README" ];then
+        cat <<'EOF' >  docs/"${POST_TITLE}".md
+        ---
+        Title | ${{ inputs.title }}
+        -- | --
+        Update Date | `${{ inputs.updated_at }}`
+        Edit link | [here](https://github.com/${{ github.repository }}/issues/${{ inputs.number }})
+        
+        ---
+        ${{ inputs.body }}
+        EOF
+        else
+        cat <<'EOF' >  docs/"${POST_TITLE}".md
+        ---
+        Title | ${{ inputs.title }}
+        -- | --
+        Create Date | `${{ inputs.created_at }}`
+        Update Date | `${{ inputs.updated_at }}`
+        Edit link | [here](https://github.com/${{ github.repository }}/issues/${{ inputs.number }})
+        
+        ---
+        ${{ inputs.body }}
+        EOF
+        fi
+    - name: Push changes to repo
+      shell: bash
+      run: |
+        REMOTE=https://${{ inputs.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        git config user.email "${{ inputs.actor }}@users.noreply.github.com"
+        git config user.name "${{ inputs.actor }}"
+        git pull ${REMOTE}
+        git checkout ${{ inputs.branch }}
+        git add .
+        git status
+        git commit -am "Add new comment"
+        git push ${REMOTE} ${{ inputs.branch }}
