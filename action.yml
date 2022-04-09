@@ -48,7 +48,7 @@ runs:
         # useing '' to wrap the title to escapse backticks
         # and quates to wrap title in post body is to escapse backticks in jekyll building
         POST_TITLE=$(sed -E 's/[[:space:]|[:punct:]]/_/g' <<<'${{ inputs.title }}')
-        cat <<'EOF' > docs/"${POST_TITLE}".md
+        cat <<'EOF' > data/"${POST_TITLE}".md
         ${{ inputs.body }}
         EOF
         pip3 install geopandas
