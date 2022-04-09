@@ -51,10 +51,10 @@ runs:
         cat <<'EOF' > data/"${POST_TITLE}".md
         ${{ inputs.body }}
         EOF
+        ls data
         pip3 install geopandas
         wget https://raw.githubusercontent.com/junxnone/issue2geojson/main/addr2geojson.py
         python3 addr2geojson.py -i data/"${POST_TITLE}".md -o data/"${POST_TITLE}".geojson
-        rm data/"${POST_TITLE}".md
     - name: Push changes to repo
       shell: bash
       run: |
