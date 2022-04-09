@@ -51,7 +51,8 @@ runs:
         cat <<'EOF' > docs/"${POST_TITLE}".md
         ${{ inputs.body }}
         EOF
-        python3 addr2lnglat.py -i data/"${POST_TITLE}".md -o data/"${POST_TITLE}".geojson
+        pip3 install geopandas
+        python3 addr2geojson.py -i data/"${POST_TITLE}".md -o data/"${POST_TITLE}".geojson
         rm data/"${POST_TITLE}".md
     - name: Push changes to repo
       shell: bash
