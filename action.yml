@@ -1,4 +1,4 @@
-name: issue2lnglat
+name: issue2geojson
 description: "Turn issues into markdown file"
 branding:
   icon: "archive"
@@ -9,9 +9,9 @@ inputs:
     required: true
     default: "main"
   dir:
-    description: "the posts dir"
+    description: "the data dir"
     required: true
-    default: "_posts"
+    default: "data"
   GITHUB_TOKEN:
     description: "secrets.GITHUB_TOKEN"
     required: true
@@ -51,10 +51,9 @@ runs:
         cat <<'EOF' > data/"${POST_TITLE}".md
         ${{ inputs.body }}
         EOF
-        ls data
-        #pip3 install geopandas
-        #wget https://raw.githubusercontent.com/junxnone/issue2geojson/main/addr2geojson.py
-        #python3 addr2geojson.py -i data/"${POST_TITLE}".md -o data/"${POST_TITLE}".geojson
+        pip3 install geopandas
+        wget https://raw.githubusercontent.com/junxnone/issue2geojson/main/addr2geojson.py
+        python3 addr2geojson.py -i data/"${POST_TITLE}".md -o data/"${POST_TITLE}".geojson
     - name: Push changes to repo
       shell: bash
       run: |
