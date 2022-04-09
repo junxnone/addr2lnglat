@@ -7,7 +7,7 @@ inputs:
   branch:
     description: "Target branch name to push the markdownfile"
     required: true
-    default: "master"
+    default: "main"
   dir:
     description: "the posts dir"
     required: true
