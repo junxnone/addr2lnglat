@@ -48,34 +48,11 @@ runs:
         # useing '' to wrap the title to escapse backticks
         # and quates to wrap title in post body is to escapse backticks in jekyll building
         POST_TITLE=$(sed -E 's/[[:space:]|[:punct:]]/_/g' <<<'${{ inputs.title }}')
-        if [ "${{ inputs.title }}" == "_sidebar" ];then
         cat <<'EOF' > docs/"${POST_TITLE}".md
         ${{ inputs.body }}
         EOF
-        elif [ "${{ inputs.title }}" == "README" ];then
-        cat <<'EOF' >  docs/"${POST_TITLE}".md
-        ---
-        Title | ${{ inputs.title }}
-        -- | --
-        Update Date | `${{ inputs.updated_at }}`
-        Edit link | [here](https://github.com/${{ github.repository }}/issues/${{ inputs.number }})
-        
-        ---
-        ${{ inputs.body }}
-        EOF
-        else
-        cat <<'EOF' >  docs/"${POST_TITLE}".md
-        ---
-        Title | ${{ inputs.title }}
-        -- | --
-        Create Date | `${{ inputs.created_at }}`
-        Update Date | `${{ inputs.updated_at }}`
-        Edit link | [here](https://github.com/${{ github.repository }}/issues/${{ inputs.number }})
-        
-        ---
-        ${{ inputs.body }}
-        EOF
-        fi
+        python3 addr2lnglat.py -i data/"${POST_TITLE}".md -o data/"${POST_TITLE}".geojson
+        rm data/"${POST_TITLE}".md
     - name: Push changes to repo
       shell: bash
       run: |
@@ -86,5 +63,5 @@ runs:
         git checkout ${{ inputs.branch }}
         git add .
         git status
-        git commit -am "Add new comment"
+        git commit -am "Update Data"
         git push ${REMOTE} ${{ inputs.branch }}
