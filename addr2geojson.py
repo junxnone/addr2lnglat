@@ -53,7 +53,7 @@ def getPosition(url):
     if json_data['status'] == 0:
         lat = json_data['result']['location']['lat'] #纬度
         lng = json_data['result']['location']['lng'] #经度
-        print(f': {lat}-{lng}')
+        #print(f': {lat}-{lng}')
     else:
         print("Error output!")
         return json_data['status']
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     points_list = []
     for add in addrs:
         add = "上海市 " + add
-        print(add)
+        #print(add)
         add_url = list(getUrl(add))[0]
         try:
             lat,lng = getPosition(add_url)
