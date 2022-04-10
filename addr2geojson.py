@@ -1,6 +1,7 @@
 # coding=utf-8
 import requests
 import json
+import time
 import geopandas
 from shapely.geometry import Point
 from argparse import ArgumentParser
@@ -65,15 +66,23 @@ if __name__ == "__main__":
     args = build_argparser().parse_args()
     addrs = read_txt2list(args.input)
     points_list = []
+    restart = 0
+    recnt = 0
     for add in addrs:
         add = "上海市 " + add
-        #print(add)
+        restart += 1
+        print(f'{restart + recnt*500} ', end='')
         add_url = list(getUrl(add))[0]
         try:
             lat,lng = getPosition(add_url)
             points_list.append(Point(lng, lat))
         except Error as e:
             print(e)
+        if restart >= 500:
+            restart = 0
+            recnt += 1
+            print(f'Wait for Baidu Server to cool')
+            time.sleep(60)
     p_data = {'addr': addrs, 'geometry': points_list}
     gdf = geopandas.GeoDataFrame(p_data, crs="EPSG:4326")
     gdf.to_file(args.output, driver='GeoJSON')
