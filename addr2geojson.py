@@ -69,7 +69,6 @@ if __name__ == "__main__":
     addrs_list = []
     add_index = 0
     for add in addrs:
-        add = "上海市 " + add
         add_index += 1
         print(f'{add_index}-{add} ', end='')
         add_url = list(getUrl(add))[0]
