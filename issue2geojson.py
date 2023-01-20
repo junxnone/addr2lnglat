@@ -55,6 +55,6 @@ if __name__ == "__main__":
     add_index = 0
     for i in range(len(names)):
         points_list.append(Point(float(lngs[i]), float(lats[i])))
-    p_data = {'addr': names, 'prices': prices, 'visits': visits, 'wiki': wikis_link, 'geometry': points_list}
+    p_data = {'addr': names, 'price': prices, 'visit': visits, 'wiki': wikis_link, 'geometry': points_list}
     gdf = geopandas.GeoDataFrame(p_data, crs="EPSG:4326")
     gdf.to_file(args.output, driver='GeoJSON')
