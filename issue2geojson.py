@@ -35,10 +35,10 @@ def parse_md(file_path):
             strs = line.split('|')
             #temp = line.strip('\n').split(' ')[0]
             names.append(strs[0])
-            lngs.append(strs[1])
-            lats.append(strs[2])
-            prices.append(strs[3])
-            visits.append(strs[4])
+            lngs.append(strs[1].strip(' '))
+            lats.append(strs[2].strip(' '))
+            prices.append(strs[3].strip(' '))
+            visits.append(strs[4].strip(' '))
             wikis_link.append(strs[5].split('(')[1].strip(')\n'))
     return names, lngs, lats, prices, visits, wikis_link
 
