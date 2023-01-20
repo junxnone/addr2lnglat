@@ -52,9 +52,9 @@ runs:
         ${{ inputs.body }}
         EOF
         pip3 install geopandas
-        wget https://raw.githubusercontent.com/junxnone/issue2geojson/main/addr2geojson.py
-        python3 addr2geojson.py -i "${{ inputs.dir }}"/"${POST_TITLE}".md -o "${{ inputs.dir }}"/"${POST_TITLE}".geojson
-        rm addr2geojson.py
+        wget https://raw.githubusercontent.com/junxnone/issue2geojson/fmap/issue2geojson.py
+        python3 issue2geojson.py -i "${{ inputs.dir }}"/"${POST_TITLE}".md -o "${{ inputs.dir }}"/"${POST_TITLE}".geojson
+        rm issue2geojson.py
     - name: Push changes to repo
       shell: bash
       run: |
